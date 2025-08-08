@@ -1,42 +1,60 @@
-from agents.narratorAgent import get_narration
-from agents.monsterAgent import handle_combat
-from agents.itemAgent import give_item
-from tools.game_tools import roll_dice, generate_event
+import asyncio
 
-def main():
-    print("🎮 Welcome to the Fantasy Adventure Game!")
-    name = input("🧙 What's your character's name? > ")
-    char_class = input("⚔️ Choose your class (warrior, mage, rogue, etc.): > ")
+from agents import(
+    Agent,
+    Runner,
+    SQLiteSession
+)
 
-    print("\n📜 Let the adventure begin...\n")
+from _instructions import get_game_master_instructions
+from my_sgents import(
+    item_agent,
+    monster_agent,
+    narrator_agent
+)
+from my_tools import(
+    generate_events,
+    roll_dice 
+)
+from gemini_model import geminiModel, config
 
-    print(get_narration(name, char_class))
+def mainAgent()-> Agent:
+    agent = Agent(
+        name= "game Master Agent",
+        instructions= get_game_master_instructions(),
+        tools= [generate_events, roll_dice],
+        handoffs= [
+            item_agent,
+            monster_agent,
+            narrator_agent
+        ],
+        model= geminiModel
+    )
+    
+    return agent
 
+
+async def runMainAgent():
+    agent = mainAgent()
+    session = SQLiteSession("user_Maaz", "chat_history.db")
+    
+    print("WELLCOME TO GAME MASTER AGENT")
     while True:
-        choice = input("\n👉 What will you do next? (explore/fight/item/quit): > ").strip().lower()
-
-        if choice == "explore":
-            event = generate_event()
-            print(f"\n🌲 Event: {event}")
-            story = get_narration(name, char_class, event)
-            print(story)
-
-        elif choice == "fight":
-            outcome, story = handle_combat(name, char_class)
-            print(f"\n👾 Monster Fight Result: {outcome}")
-            print(story)
-
-        elif choice == "item":
-            item, desc = give_item(char_class)
-            print(f"\n🎁 Item Acquired: {item}")
-            print(desc)
-
-        elif choice == "quit":
-            print("\n👋 Thanks for playing! May your legend live on.")
+        playerInput = input("🧑🏽: ").strip()
+        
+        if playerInput.lower() in ["stop", "quit", "exit"]:
+            print("Exiting Game master. Goodbye!")
             break
-
-        else:
-            print("❌ Invalid choice. Try again.")
-
+        
+        result = await Runner.run(
+            starting_agent= agent,
+            input= playerInput,
+            run_config= config,
+            session= session,
+            max_turns= 5
+        )
+        
+        print(f"🤖: {result.final_output}")
+        
 if __name__ == "__main__":
-    main()
+    asyncio.run(runMainAgent())

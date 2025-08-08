@@ -9,3 +9,5 @@ wheels/
 # Virtual environments
 my_venv
 .env
+
+chat_history.db
