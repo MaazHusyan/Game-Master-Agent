@@ -12,3 +12,5 @@ my_venv
 
 # chat files you don't need kya hi kro ge iska
 chat_history.db
+chat_history.db-shm
+chat_history.db-wal

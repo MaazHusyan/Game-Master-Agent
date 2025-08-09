@@ -4,7 +4,7 @@ from my_tools.roll_dice import rollDice
 from gemini_model import geminiModel
 from _instructions import get_monster_agent_instructions
 
-
+print("Monster Agent Activated")
 def getMonsterAgent() -> Agent:
     agent = Agent(
         name= "Monster Agent",

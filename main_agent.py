@@ -7,26 +7,25 @@ from agents import(
 )
 
 from _instructions import get_game_master_instructions
-from my_sgents import(
-    item_agent,
-    monster_agent,
-    narrator_agent
-)
-from my_tools import(
-    generate_events,
-    roll_dice 
-)
+
+from my_sgents.item_agent import getItemAgent
+from my_sgents.monster_agent import getMonsterAgent
+from my_sgents.narrator_agent import getNarratorAgent
+
+from my_tools.generate_events import generateEvents
+from my_tools.roll_dice import rollDice
+
 from gemini_model import geminiModel, config
 
 def mainAgent()-> Agent:
     agent = Agent(
         name= "game Master Agent",
         instructions= get_game_master_instructions(),
-        tools= [generate_events, roll_dice],
+        tools= [generateEvents, rollDice],
         handoffs= [
-            item_agent,
-            monster_agent,
-            narrator_agent
+            getItemAgent(),
+            getMonsterAgent(),
+            getNarratorAgent()
         ],
         model= geminiModel
     )
@@ -51,7 +50,7 @@ async def runMainAgent():
             input= playerInput,
             run_config= config,
             session= session,
-            max_turns= 5
+            max_turns= 15
         )
         
         print(f"🤖: {result.final_output}")
