@@ -10,4 +10,5 @@ wheels/
 my_venv
 .env
 
+# chat files you don't need kya hi kro ge iska
 chat_history.db
