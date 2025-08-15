@@ -1,5 +1,4 @@
 # 🚀 Game Master Agent
-==========================
 
 ** Fantasy Adventure Game ** 
 **  A role-playing game where players embark on a thrilling adventure, making choices that shape the game's outcome. **
@@ -80,3 +79,4 @@ The Fantasy Adventure Game was created by [Maaz Husyan].
 ================
 
 The Fantasy Adventure Game is licensed under the MIT License.
+
